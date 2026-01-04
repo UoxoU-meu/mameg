@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>創作用 名前ジェネレーター</title>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f7f7ff;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #ff6fae;
+    }
+
+    .puni {
+      background: #ffd6e8;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 14px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #e9a8c6;
+      transition: all 0.1s ease;
+      font-weight: bold;
+      margin: 5px;
+    }
+
+    .puni:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #e9a8c6;
+    }
+
+
+    details {
+      margin-top: 10px;
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #ffffff;
+      border-radius: 16px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #ff6fae;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: inline-block;
+      min-width: 200px;
+    }
+    .delete {
+  margin-left: 10px;
+  background: #eee;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.delete:hover {
+  background: #ffb3c7;
+}
+
+
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <h1>🎲 創作用 名前ジェネレーター</h1>
+
+  <h2>苗字登録</h2>
+  <input id="myojiInput" placeholder="苗字">
+  <button class="puni" onclick="addMyoji()">追加</button>
+
+  <details>
+    <summary>苗字一覧</summary>
+    <ul id="myojiList"></ul>
+  </details>
+
+  <h2>名前登録</h2>
+  <input id="namaeInput" placeholder="名前">
+  <button class="puni" onclick="addNamae()">追加</button>
+
+  <details>
+    <summary>名前一覧</summary>
+    <ul id="namaeList"></ul>
+  </details>
+
+  <hr>
+
+  <button class="puni" onclick="generateName()">生成！</button>
+  <div id="result">---</div><br>
+  <button class="puni" onclick="addFavorite()">⭐ お気に入り</button>
+
+  <details open>
+    <summary>💖 お気に入り一覧</summary>
+    <ul id="favoriteList"></ul>
+  </details>
+
+</div>
+
+<script>
+  let myoji = [];
+  let namae = [];
+  let favorites = [];
+
+  function saveData() {
+    localStorage.setItem("myoji", JSON.stringify(myoji));
+    localStorage.setItem("namae", JSON.stringify(namae));
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }
+
+  window.onload = () => {
+    myoji = JSON.parse(localStorage.getItem("myoji") || "[]");
+    namae = JSON.parse(localStorage.getItem("namae") || "[]");
+    favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    render();
+  };
+
+  function addMyoji() {
+    const i = myojiInput.value;
+    if (!i) return;
+    myoji.push(i);
+    myojiInput.value = "";
+    saveData();
+    render();
+  }
+
+  function addNamae() {
+    const i = namaeInput.value;
+    if (!i) return;
+    namae.push(i);
+    namaeInput.value = "";
+    saveData();
+    render();
+  }
+
+  function generateName() {
+    if (!myoji.length || !namae.length) {
+      result.textContent = "登録してね！";
+      return;
+    }
+    const m = myoji[Math.floor(Math.random() * myoji.length)];
+    const n = namae[Math.floor(Math.random() * namae.length)];
+    result.textContent = m + " " + n;
+  }
+  
+
+  function addFavorite() {
+    const name = result.textContent;
+    if (name === "---" || favorites.includes(name)) return;
+    favorites.push(name);
+    saveData();
+    render();
+  }
+
+  function deleteFavorite(i) {
+    favorites.splice(i, 1);
+    saveData();
+    render();
+  }
+function deleteMyoji(i) {
+  myoji.splice(i, 1);
+  saveData();
+  render();
+}
+
+function deleteNamae(i) {
+  namae.splice(i, 1);
+  saveData();
+  render();
+}
+
+
+  function render() {
+    myojiList.innerHTML = "";
+    namaeList.innerHTML = "";
+    favoriteList.innerHTML = "";
+
+  myoji.forEach((m, i) => {
+  myojiList.innerHTML +=
+    `<li>${m} <button class="delete" onclick="deleteMyoji(${i})">削除</button></li>`;
+});
+
+namae.forEach((n, i) => {
+  namaeList.innerHTML +=
+    `<li>${n} <button class="delete" onclick="deleteNamae(${i})">削除</button></li>`;
+});
+
+
+    favorites.forEach((f, i) => {
+      favoriteList.innerHTML +=
+        `<li>${f} <button onclick="deleteFavorite(${i})">削除</button></li>`;
+    });
+  }
+
+  myojiInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") addMyoji();
+  });
+
+  namaeInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") addNamae();
+  });
+</script>
+
+
+</body>
+</html>
+
