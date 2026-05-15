@@ -115,6 +115,14 @@
   <div id="result">---</div><br>
   <button class="puni" onclick="addFavorite()">⭐ お気に入り</button>
 
+  <br>
+
+  <button class="puni" onclick="fixMyoji()">苗字固定</button>
+  <button class="puni" onclick="fixNamae()">名前固定</button>
+  <button class="puni" onclick="clearFix()">固定解除</button>
+
+<div id="fixStatus"></div>
+  
   <details open>
     <summary>💖 お気に入り一覧</summary>
     <ul id="favoriteList"></ul>
@@ -126,6 +134,12 @@
   let myoji = [];
   let namae = [];
   let favorites = [];
+
+  let fixedMyoji = null;
+  let fixedNamae = null;
+
+  let currentMyoji = "";
+  let currentNamae = "";
 
   function saveData() {
     localStorage.setItem("myoji", JSON.stringify(myoji));
@@ -157,17 +171,53 @@
     saveData();
     render();
   }
-
   function generateName() {
-    if (!myoji.length || !namae.length) {
-      result.textContent = "登録してね！";
-      return;
-    }
-    const m = myoji[Math.floor(Math.random() * myoji.length)];
-    const n = namae[Math.floor(Math.random() * namae.length)];
-    result.textContent = m + " " + n;
+  if (!myoji.length || !namae.length) {
+    result.textContent = "登録してね！";
+    return;
   }
-  
+
+
+  let m;
+  let n;
+
+  if (fixedMyoji) {
+    m = fixedMyoji;
+  } else {
+    m = myoji[Math.floor(Math.random() * myoji.length)];
+  }
+
+  if (fixedNamae) {
+    n = fixedNamae;
+  } else {
+    n = namae[Math.floor(Math.random() * namae.length)];
+  }
+
+  currentMyoji = m;
+  currentNamae = n;
+
+  result.textContent = m + " " + n;
+  updateFixStatus();
+}
+
+
+  function fixMyoji() {
+  fixedMyoji = currentMyoji;
+  updateFixStatus();
+}
+
+function fixNamae() {
+  fixedNamae = currentNamae;
+  updateFixStatus();
+}
+
+function clearFix() {
+  fixedMyoji = null;
+  fixedNamae = null;
+  updateFixStatus();
+}
+
+ 
 
   function addFavorite() {
     const name = result.textContent;
@@ -195,27 +245,61 @@ function deleteNamae(i) {
 }
 
 
+
   function render() {
-    myojiList.innerHTML = "";
-    namaeList.innerHTML = "";
-    favoriteList.innerHTML = "";
+  myojiList.innerHTML = "";
+  namaeList.innerHTML = "";
+  favoriteList.innerHTML = "";
 
+  // 苗字一覧
   myoji.forEach((m, i) => {
-  myojiList.innerHTML +=
-    `<li>${m} <button class="delete" onclick="deleteMyoji(${i})">削除</button></li>`;
-});
+    myojiList.innerHTML +=
+      `<li>${m}
+      <button class="delete" onclick="deleteMyoji(${i})">
+      削除
+      </button>
+      </li>`;
+  });
 
-namae.forEach((n, i) => {
-  namaeList.innerHTML +=
-    `<li>${n} <button class="delete" onclick="deleteNamae(${i})">削除</button></li>`;
-});
+  // 名前一覧
+  namae.forEach((n, i) => {
+    namaeList.innerHTML +=
+      `<li>${n}
+      <button class="delete" onclick="deleteNamae(${i})">
+      削除
+      </button>
+      </li>`;
+  });
 
+  // お気に入り一覧
+  favorites.forEach((f, i) => {
+    favoriteList.innerHTML +=
+      `<li>${f}
+      <button class="delete" onclick="deleteFavorite(${i})">
+      削除
+      </button>
+      </li>`;
+  });
+}
+  
 
-    favorites.forEach((f, i) => {
-      favoriteList.innerHTML +=
-        `<li>${f} <button onclick="deleteFavorite(${i})">削除</button></li>`;
-    });
+  function updateFixStatus() {
+  let text = "";
+
+  if (fixedMyoji) {
+    text += "📌苗字固定: " + fixedMyoji + " ";
   }
+
+  if (fixedNamae) {
+    text += "📌名前固定: " + fixedNamae;
+  }
+
+  if (text === "") {
+    text = "固定なし";
+  }
+
+  document.getElementById("fixStatus").textContent = text;
+}
 
   myojiInput.addEventListener("keydown", e => {
     if (e.key === "Enter") addMyoji();
@@ -224,6 +308,7 @@ namae.forEach((n, i) => {
   namaeInput.addEventListener("keydown", e => {
     if (e.key === "Enter") addNamae();
   });
+
 </script>
 
 
