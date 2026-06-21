@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>キャラ帳</title>
+
+<style>
+
+body{
+    font-family:sans-serif;
+    background:linear-gradient(
+        135deg,
+        #ffe6f0,
+        #e8e6ff
+    );
+
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    color:#ff6fae;
+}
+
+.card{
+    background:white;
+
+    border-radius:20px;
+
+    padding:15px;
+
+    margin-bottom:15px;
+
+    box-shadow:
+    0 4px 10px rgba(0,0,0,.1);
+}
+
+input,
+textarea{
+    width:100%;
+
+    margin-top:5px;
+    margin-bottom:10px;
+
+    padding:8px;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+
+    box-sizing:border-box;
+}
+
+textarea{
+    resize:vertical;
+}
+
+.puni{
+    background:#ffd6e8;
+
+    border:none;
+
+    border-radius:20px;
+
+    padding:8px 14px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    margin:4px;
+
+    box-shadow:
+    0 6px 0 #e9a8c6;
+}
+
+.puni:active{
+    transform:translateY(4px);
+
+    box-shadow:
+    0 2px 0 #e9a8c6;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>📖 キャラ帳</h1>
+
+<button class="puni" onclick="addCharacter()">
+＋ 新しいキャラ
+</button>
+
+<div id="characterList"></div>
+
+</div>
+
+<script>
+
+let characters = [];
+
+window.onload = () => {
+
+    characters =
+    JSON.parse(
+        localStorage.getItem("characters")
+        || "[]"
+    );
+
+    render();
+};
+
+function saveData(){
+
+    localStorage.setItem(
+        "characters",
+        JSON.stringify(characters)
+    );
+}
+
+function addCharacter(){
+
+    characters.push({
+
+        name:"",
+        gender:"",
+        age:"",
+        job:"",
+        personality:"",
+        memo:""
+
+    });
+
+    saveData();
+    render();
+}
+
+function deleteCharacter(i){
+
+    characters.splice(i,1);
+
+    saveData();
+    render();
+}
+
+function updateField(i,key,value){
+
+    characters[i][key] = value;
+
+    saveData();
+}
+
+function render(){
+
+    characterList.innerHTML = "";
+
+    characters.forEach((c,i)=>{
+
+        characterList.innerHTML += `
+
+        <div class="card">
+
+            <input
+                placeholder="名前"
+                value="${c.name}"
+                oninput="updateField(${i},'name',this.value)"
+            >
+
+            <input
+                placeholder="性別"
+                value="${c.gender}"
+                oninput="updateField(${i},'gender',this.value)"
+            >
+
+            <input
+                placeholder="年齢"
+                value="${c.age}"
+                oninput="updateField(${i},'age',this.value)"
+            >
+
+            <input
+                placeholder="職業"
+                value="${c.job}"
+                oninput="updateField(${i},'job',this.value)"
+            >
+
+            <input
+                placeholder="性格"
+                value="${c.personality}"
+                oninput="updateField(${i},'personality',this.value)"
+            >
+
+            <textarea
+                placeholder="メモ"
+                oninput="updateField(${i},'memo',this.value)"
+            >${c.memo}</textarea>
+
+            <button
+                class="puni"
+                onclick="deleteCharacter(${i})"
+            >
+            削除
+            </button>
+
+        </div>
+
+        `;
+    });
+}
+
+</script>
+
+</body>
+</html>
