@@ -133,9 +133,8 @@ function addCharacter(){
     characters.push({
 
         name:"",
+        gender:"",
         age:"",
-        job:"",
-        personality:"",
         memo:""
 
     });
@@ -185,18 +184,6 @@ function render(){
                 placeholder="年齢"
                 value="${c.age}"
                 oninput="updateField(${i},'age',this.value)"
-            >
-
-            <input
-                placeholder="職業"
-                value="${c.job}"
-                oninput="updateField(${i},'job',this.value)"
-            >
-
-            <input
-                placeholder="性格"
-                value="${c.personality}"
-                oninput="updateField(${i},'personality',this.value)"
             >
 
             <textarea
