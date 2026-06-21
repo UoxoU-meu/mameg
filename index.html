@@ -134,13 +134,7 @@ select:hover {
 
   <h2>名前登録</h2>
   <input id="namaeInput" placeholder="名前">
-  <select id="namaeTag">
-    <option value="なし">なし</option>
-    <option value="ゆめかわ">ゆめかわ</option>
-    <option value="クール">クール</option>
-    <option value="和風">和風</option>
-    <option value="ファンタジー">ファンタジー</option>
-</select>
+
   <button class="puni" onclick="addNamae()">追加</button>
 
   <details>
@@ -202,16 +196,11 @@ select:hover {
     render();
   }
 
- function addNamae() {
+function addNamae() {
   const i = namaeInput.value;
   if (!i) return;
 
-  const tag = namaeTag.value;
-
-  namae.push({
-    name: i,
-    tag: tag
-  });
+  namae.push(i);
 
   namaeInput.value = "";
   saveData();
@@ -242,9 +231,7 @@ select:hover {
   currentMyoji = m;
   currentNamae = n;
 
-  result.innerHTML =
-  m + " " + n.name +
-  "<br><small>[" + n.tag + "]</small>";
+  result.textContent = m + " " + n;
   updateFixStatus();
 }
 
@@ -312,7 +299,7 @@ function deleteNamae(i) {
   // 名前一覧
   namae.forEach((n, i) => {
     namaeList.innerHTML +=
-      `<li>${n.name} [${n.tag}]
+      `<li>${n}
       <button class="delete" onclick="deleteNamae(${i})">
       削除
       </button>
@@ -338,9 +325,11 @@ function deleteNamae(i) {
     text += "📌苗字固定: " + fixedMyoji + " ";
   }
 
-  if (fixedNamae) {
-    text += "📌名前固定: " + fixedNamae;
-  }
+ if (fixedNamae) {
+  text += "📌名前固定: " +
+          fixedNamae.name +
+          " [" + fixedNamae.tag + "]";
+}
 
   if (text === "") {
     text = "固定なし";
