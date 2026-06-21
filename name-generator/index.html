@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+  <title>創作用 名前ジェネレーター</title>
+  
+  <style>
+   body {
+  font-family: sans-serif;
+  background: linear-gradient(135deg, #ffe6f0, #e8e6ff);
+  display: flex;
+  justify-content: center;
+}
+
+
+    .container {
+      margin-top: 40px;
+      text-align: center;
+      width: 85%;
+      max-width: 500px;
+    }
+
+    h1 {
+      color: #ff6fae;
+      white-space: nowrap;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .puni {
+      background: #ffd6e8;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 14px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #e9a8c6;
+      transition: all 0.1s ease;
+      font-weight: bold;
+      margin: 5px;
+    }
+
+    .puni:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #e9a8c6;
+    }
+
+
+    details {
+      margin-top: 10px;
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #ffffff;
+      border-radius: 16px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #ff6fae;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: inline-block;
+      min-width: 200px;
+    }
+    select {
+    appearance: none;
+    background: #ffd6e8;
+    border: none;
+    border-radius: 14px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ff6fae;
+
+    box-shadow: 0 4px 0 #e9a8c6;
+
+    cursor: pointer;
+
+    transition: all 0.1s ease;
+}
+select:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #e9a8c6;
+}
+select:hover {
+  background: #ffe5f0;
+}
+    .delete {
+  margin-left: 10px;
+  background: #eee;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.delete:hover {
+  background: #ffb3c7;
+}
+
+
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <h1>🎲創作用<br> 
+      名前ジェネレーター
+  </h1>
+
+  <h2>苗字登録</h2>
+  <input id="myojiInput" placeholder="苗字">
+  <button class="puni" onclick="addMyoji()">追加</button>
+
+  <details>
+    <summary>苗字一覧</summary>
+    <ul id="myojiList"></ul>
+  </details>
+
+  <h2>名前登録</h2>
+  <input id="namaeInput" placeholder="名前">
+
+  <button class="puni" onclick="addNamae()">追加</button>
+
+  <details>
+    <summary>名前一覧</summary>
+    <ul id="namaeList"></ul>
+  </details>
+
+  <hr>
+
+  <button class="puni" onclick="generateName()">生成！</button>
+  <div id="result">---</div><br>
+  <button class="puni" onclick="addFavorite()">⭐ お気に入り</button>
+
+  <br>
+
+  <button class="puni" onclick="fixMyoji()">苗字固定</button>
+  <button class="puni" onclick="fixNamae()">名前固定</button>
+  <button class="puni" onclick="clearFix()">固定解除</button>
+
+<div id="fixStatus"></div>
+  
+  <details open>
+    <summary>💖 お気に入り一覧</summary>
+    <ul id="favoriteList"></ul>
+  </details>
+
+</div>
+
+<script>
+  let myoji = [];
+  let namae = [];
+  let favorites = [];
+
+  let fixedMyoji = null;
+  let fixedNamae = null;
+
+  let currentMyoji = "";
+  let currentNamae = "";
+
+  function saveData() {
+    localStorage.setItem("myoji", JSON.stringify(myoji));
+    localStorage.setItem("namae", JSON.stringify(namae));
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }
+
+  window.onload = () => {
+    myoji = JSON.parse(localStorage.getItem("myoji") || "[]");
+    namae = JSON.parse(localStorage.getItem("namae") || "[]");
+    favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    render();
+  };
+
+  function addMyoji() {
+    const i = myojiInput.value;
+    if (!i) return;
+    myoji.push(i);
+    myojiInput.value = "";
+    saveData();
+    render();
+  }
+
+function addNamae() {
+  const i = namaeInput.value;
+  if (!i) return;
+
+  namae.push(i);
+
+  namaeInput.value = "";
+  saveData();
+  render();
+}
+  function generateName() {
+  if (!myoji.length || !namae.length) {
+    result.textContent = "登録してね！";
+    return;
+  }
+
+
+  let m;
+  let n;
+
+  if (fixedMyoji) {
+    m = fixedMyoji;
+  } else {
+    m = myoji[Math.floor(Math.random() * myoji.length)];
+  }
+
+  if (fixedNamae) {
+    n = fixedNamae;
+  } else {
+    n = namae[Math.floor(Math.random() * namae.length)];
+  }
+
+  currentMyoji = m;
+  currentNamae = n;
+
+  result.textContent = m + " " + n;
+  updateFixStatus();
+}
+
+
+  function fixMyoji() {
+  fixedMyoji = currentMyoji;
+  updateFixStatus();
+}
+
+function fixNamae() {
+  fixedNamae = currentNamae;
+  updateFixStatus();
+}
+
+function clearFix() {
+  fixedMyoji = null;
+  fixedNamae = null;
+  updateFixStatus();
+}
+
+ 
+
+  function addFavorite() {
+    const name = result.textContent;
+    if (name === "---" || favorites.includes(name)) return;
+    favorites.push(name);
+    saveData();
+    render();
+  }
+
+  function deleteFavorite(i) {
+    favorites.splice(i, 1);
+    saveData();
+    render();
+  }
+function deleteMyoji(i) {
+  myoji.splice(i, 1);
+  saveData();
+  render();
+}
+
+function deleteNamae(i) {
+  namae.splice(i, 1);
+  saveData();
+  render();
+}
+
+
+
+  function render() {
+  myojiList.innerHTML = "";
+  namaeList.innerHTML = "";
+  favoriteList.innerHTML = "";
+
+  // 苗字一覧
+  myoji.forEach((m, i) => {
+    myojiList.innerHTML +=
+      `<li>${m}
+      <button class="delete" onclick="deleteMyoji(${i})">
+      削除
+      </button>
+      </li>`;
+  });
+
+  // 名前一覧
+  namae.forEach((n, i) => {
+    namaeList.innerHTML +=
+      `<li>${n}
+      <button class="delete" onclick="deleteNamae(${i})">
+      削除
+      </button>
+      </li>`;
+  });
+
+  // お気に入り一覧
+  favorites.forEach((f, i) => {
+    favoriteList.innerHTML +=
+      `<li>${f}
+      <button class="delete" onclick="deleteFavorite(${i})">
+      削除
+      </button>
+      </li>`;
+  });
+}
+  
+
+  function updateFixStatus() {
+  let text = "";
+
+  if (fixedMyoji) {
+    text += "📌苗字固定: " + fixedMyoji + " ";
+  }
+
+if (fixedNamae) {
+  text += "📌名前固定: " + fixedNamae;
+}
+
+  if (text === "") {
+    text = "固定なし";
+  }
+
+  document.getElementById("fixStatus").textContent = text;
+}
+
+  myojiInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") addMyoji();
+  });
+
+  namaeInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") addNamae();
+  });
+
+</script>
+
+
+</body>
+</html>
+
