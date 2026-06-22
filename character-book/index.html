@@ -281,16 +281,18 @@ function render(){
     `;
     }
 function saveCharacter(){
-    const name =
-    document.getElementById("editName").value;
 
-if(name.trim() === ""){
-    alert("名前を入力してね！");
-    return;
-}
-    const c =  name;
-    c.name =
+    const name =
         document.getElementById("editName").value;
+
+    if(name.trim() === ""){
+        alert("名前を入力してね！");
+        return;
+    }
+
+    const c = characters[editingIndex];
+
+    c.name = name;
 
     c.gender =
         document.getElementById("editGender").value;
