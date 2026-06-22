@@ -43,6 +43,26 @@ h1{
     0 4px 10px rgba(0,0,0,.1);
 }
 
+.name{
+    font-size:28px;
+    font-weight:bold;
+    color:#ff6fae;
+    margin-bottom:8px;
+}
+
+.info{
+    font-size:14px;
+    color:#777;
+    margin-bottom:10px;
+}
+
+.memo{
+    font-size:13px;
+    color:#555;
+    white-space:pre-wrap;
+    margin-bottom:15px;
+}
+
 input,
 textarea{
     width:100%;
@@ -164,44 +184,55 @@ function render(){
 
     characters.forEach((c,i)=>{
 
+        const shortMemo =
+            c.memo.length > 80
+            ? c.memo.slice(0,80) + "..."
+            : c.memo;
+
         characterList.innerHTML += `
 
         <div class="card">
 
-            <input
-                placeholder="名前"
-                value="${c.name}"
-                oninput="updateField(${i},'name',this.value)"
-            >
+            <div class="name">
+                ${c.name || "名前未設定"}
+            </div>
 
-            <input
-                placeholder="性別"
-                value="${c.gender}"
-                oninput="updateField(${i},'gender',this.value)"
-            >
+            <div class="info">
+                ${c.gender || "性別未設定"}
+                ${c.age ? "・" + c.age + "歳" : ""}
+            </div>
 
-            <input
-                placeholder="年齢"
-                value="${c.age}"
-                oninput="updateField(${i},'age',this.value)"
-            >
+            <div class="memo">
+                ${shortMemo || "メモなし"}
+            </div>
 
-            <textarea
-                placeholder="メモ"
-                oninput="updateField(${i},'memo',this.value)"
-            >${c.memo}</textarea>
+            <button
+                class="puni"
+                onclick="editCharacter(${i})"
+            >
+                編集
+            </button>
 
             <button
                 class="puni"
                 onclick="deleteCharacter(${i})"
             >
-            削除
+                削除
             </button>
 
         </div>
 
         `;
     });
+}
+
+function editCharacter(i){
+
+    alert(
+        characters[i].name +
+        " の編集画面はまだ作成中！"
+    );
+
 }
 
 </script>
