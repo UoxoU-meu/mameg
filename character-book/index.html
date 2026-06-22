@@ -128,6 +128,7 @@ textarea{
 <script>
 
 let characters = [];
+let editingIndex = null;
 
 window.onload = () => {
 
@@ -159,8 +160,10 @@ function addCharacter(){
 
     });
 
+    editingIndex = characters.length - 1;
+
     saveData();
-    render();
+    renderEditScreen();
 }
 
 function deleteCharacter(i){
@@ -226,14 +229,97 @@ function render(){
     });
 }
 
-function editCharacter(i){
+    function renderEditScreen(){
 
-    alert(
-        characters[i].name +
-        " の編集画面はまだ作成中！"
-    );
+    const c = characters[editingIndex];
 
+    characterList.innerHTML = `
+
+    <div class="card">
+
+        <h2>✏️ キャラ編集</h2>
+
+        <input
+            id="editName"
+            placeholder="名前"
+            value="${c.name}"
+        >
+
+        <input
+            id="editGender"
+            placeholder="性別"
+            value="${c.gender}"
+        >
+
+        <input
+            id="editAge"
+            placeholder="年齢"
+            value="${c.age}"
+        >
+
+        <textarea
+            id="editMemo"
+            placeholder="メモ"
+        >${c.memo}</textarea>
+
+        <button
+            class="puni"
+            onclick="saveCharacter()"
+        >
+            保存
+        </button>
+
+        <button
+            class="puni"
+            onclick="cancelEdit()"
+        >
+            戻る
+        </button>
+
+    </div>
+
+    `;
+    }
+function saveCharacter(){
+    const name =
+    document.getElementById("editName").value;
+
+if(name.trim() === ""){
+    alert("名前を入力してね！");
+    return;
 }
+    const c =  name;
+    c.name =
+        document.getElementById("editName").value;
+
+    c.gender =
+        document.getElementById("editGender").value;
+
+    c.age =
+        document.getElementById("editAge").value;
+
+    c.memo =
+        document.getElementById("editMemo").value;
+
+    saveData();
+
+    editingIndex = null;
+
+    render();
+}
+function cancelEdit(){
+
+    editingIndex = null;
+
+    render();
+}
+
+function editCharacter(i){
+    editingIndex = i;
+    renderEditScreen();
+}
+
+
 
 </script>
 
