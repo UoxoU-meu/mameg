@@ -1,0 +1,95 @@
+body{
+
+    margin:0;
+
+    background:linear-gradient(
+        #fff8fc,
+        #f8f3ff
+    );
+
+    font-family:sans-serif;
+
+    text-align:center;
+
+    padding:40px;
+
+}
+
+h1{
+
+    color:#ff8fc4;
+
+}
+
+.sub{
+
+    color:#777;
+
+    margin-bottom:40px;
+
+}
+
+#games{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:25px;
+
+}
+
+.card{
+
+    width:260px;
+
+    background:white;
+
+    border-radius:25px;
+
+    padding:25px;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,.08);
+
+    transition:.2s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.card h2{
+
+    margin-top:0;
+
+}
+
+.days{
+
+    font-size:30px;
+
+    color:#ff7bb5;
+
+    font-weight:bold;
+
+    margin:20px 0;
+
+}
+
+.date{
+
+    color:#777;
+
+}
+
+.version{
+
+    color:#555;
+
+}
